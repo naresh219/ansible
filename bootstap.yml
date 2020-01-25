@@ -1,0 +1,33 @@
+--- # simple program for bootstaping the programs
+- hosts: all
+  become: yes
+  tasks:
+    - name: insert the text data into the hosts file
+      lineinfile:
+        line: "ansible.xyzcorp.com 169.168.0.1"
+        path: /etc/hosts
+    - name: installing the elinks package web cli client
+      package:
+        name: elinks
+        state: latest
+    - name: creating the audit user
+      user:
+        name: "xyzcorp_audit"
+        state: present
+    - name: copy the files from source machine to remote locations
+      copy:
+        src: "/home/ansible/motd"
+        src: "/home/ansible/issue"
+        dest: "/etc"
+    - name: installing nmap package
+      package:
+        name: nmap-ncat
+        state: latest
+    - name: creating a network user
+      user:
+        name: "xyzcorp_network"
+        state: present
+    - name: copying the important data
+      copy:
+        src: "/home/ansible/scripts.tgz"
+        dest: "/mnt/storage" 
