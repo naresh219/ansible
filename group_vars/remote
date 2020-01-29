@@ -1,4 +1,4 @@
-working_dir: /home/ansible/git/
+working_dir: /home/ansible/git/ansible/
 
 service_list:
 - httpd

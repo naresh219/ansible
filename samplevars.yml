@@ -1,0 +1,20 @@
+--- # simple variables defined yaml script
+- hosts: all
+  become: yes
+  tasks:
+    - name: creating the directory
+      file:
+                    path: "{{ working_dir }}"
+                    state: directory
+    - name: write service lists
+      lineinfile:
+        path: "{{ working_dir }}/service.txt"
+        create: yes
+        line: "{{ service_list }}"
+    - name: view shared properties
+      command: ls -la "{{ share_paths['nfs'] }}"
+      register: cmd_output
+    - name: saving the output
+      copy:
+              content: "{{ cmd_output }}"
+              dest: "{{ working_dir }}/cmd_output.txt"

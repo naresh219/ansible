@@ -1,0 +1,24 @@
+--- # simple program for calling sthe fucntions with tags
+- hosts: all
+  become: yes
+  tasks:
+    - name: installing the software
+      package:
+        name: elinks
+        state: latest
+      tags:
+        - software
+    - name: creating and inserting the line with in the file
+      lineinfile:
+        path: /home/ansible/text.txt
+        create: yes
+        line: "Tag Called!"
+      tags:
+        - config
+        - files
+    - name: copy the file into temp directory
+      copy:
+        src: /home/ansible/text.txt
+        dest: /tmp/copied.txt
+      tags:
+        - files
