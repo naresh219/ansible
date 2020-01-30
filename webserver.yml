@@ -1,0 +1,45 @@
+--- # sample program for testing multipl taks
+- hosts: webservers
+  become: yes
+  vars_files:
+    - /home/ansible/confidential
+  tasks:
+    - name: installing the software package
+      package:
+        name: httpd
+        state: installed
+    - name: starting and enabling the service
+      service:
+        name: httpd
+        state: restarted
+        enabled: yes
+      tags:
+        - base-install
+    - name: configuring the setup file
+      template:
+        src: /home/ansible/vhost.conf.j2
+        dest: /etc/httpd/conf.d/vhosts.conf
+      notify: restart httpd
+      tags:
+        - vhost
+    - name: copying the password file
+      template:
+        src: /home/ansible/htpasswd.j2
+        dest: /etc/httpd/conf/htpasswd
+      notify: restart httpd
+      tags:
+        - service
+    - name: running the task
+      command: /opt/data-job.sh
+      async: 600
+      poll: 0
+      tags:
+        - data-job
+  handlers:
+    - name: restarting httpd
+      service:
+        name: httpd
+        state: restarted
+      listen: restart httpd
+      tags:
+        - restarting-service
