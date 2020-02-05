@@ -1,0 +1,11 @@
+---
+- hosts: all
+  become: yes
+  tasks:
+    - name: creating the user
+      user:
+        name: "{{ item }}"
+      with_items:
+        - sam
+        - bob
+        - joker
