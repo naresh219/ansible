@@ -1,0 +1,13 @@
+#sample script for installing httpd server
+---
+- hosts: web
+  become: yes
+  tasks:
+    - name: installing httpd
+      yum: name=httpd state=latest
+    - name: starting and enabling the service
+      service: name=httpd state=started enabled=yes
+    - name: Downloading the source package
+      get_url: url=http://repo.example.com/website.tgz dest=/tmp/website.tgz
+    - name: unarchiving the source data
+      unarchive: src=/tmp/website.tgz dest=/var/www/html/ remote_src=yes
