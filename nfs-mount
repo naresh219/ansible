@@ -1,0 +1,50 @@
+# script for mounting the nfs share in remote nodes
+---
+- hosts: nfs
+  become: yes
+  vars:
+    share_path: /mnt/nfsroot
+  tasks:
+    - name: Installing nfs utils
+      yum:
+        name: nfs-utils
+        state: latest
+    - name: Starting the service nfs-server
+      service:
+        name: nfs-server
+        state: started
+        enabled: yes
+    - name: Deploying the template
+      template:
+        src: /home/ansible/exports.j2
+        dest: /etc/exports
+      notify: nfs exports
+  handlers:
+    - name: exporting the filesystems
+      command: exportfs -a
+      listen: nfs exports
+
+- hosts: remote
+  become: yes
+  vars:
+    nfs_ip: "{{ hostvars['nfs']['ansible_default_ipv4']['address'] }}"
+    nfs_hostname: "{{ hostvars['nfs']['ansible_hostname'] }}"
+  vars_files:
+    - /home/ansible/user-list.txt
+  tasks:
+    - name: deploying the template
+      template:
+        src: /home/ansible/etc.hosts.j2
+        dest: /etc/hosts.nfslab
+    - name: checking the file statistics
+      stat:
+        path: /opt/user-agreement.txt
+      register: statout
+    - name: analyzing the output
+      debug:
+        var: statout
+    - name: creating the users
+      user:
+        name: "{{ item }}"
+      when: statout.stat.exists
+      loop: "{{ users }}"

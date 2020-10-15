@@ -1,0 +1,27 @@
+#!/bin/bash
+clear
+
+s3_bucket="nareshp219"
+bucket_region="ap-southeast-1"
+server_region="ap-southeast-1"
+
+######### File Format##########
+File_date_format=$(date +""%d-%m-%Y")
+
+YEAR=$(date +%Y)
+MONTH=$(date +%m)
+DAY=$(date +%d)
+log_path="/var/log/"
+
+############# syncing the file ##########
+
+find $log_path -type f -name "*.log" | sudo xargs -I {} aws s3 cp {} s3://$s3_bucket/server-logs/$HOSTNAME/$YEAR/$MONTH/$DAY/ --region=$bucket_region
+
+
+sleep 10
+
+############# Archiving the log files ##########
+
+find $log_path -type f -name "*.log" | sudo xargs -I {} gzip {}
+
+sleep 10
