@@ -9,7 +9,7 @@
           keypair: aws-imss-1
           instance_type: t3.micro
           image: ami-0cc4f2b06b56d27e9
-          region: me-south-1
+          region: me-south-1a
           wait: yes
           count: 1
           vpc_subnet_id: Default
