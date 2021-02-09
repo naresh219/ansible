@@ -1,0 +1,6 @@
+---
+  - name: Playbook for provisiong instance in aws cloud
+    hosts: localhost
+    connection: local
+    gather_facts: false
+    tasks:
