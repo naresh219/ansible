@@ -4,3 +4,14 @@
     connection: local
     gather_facts: false
     tasks:
+      - name: provisioning EC2 instance
+        ec2:
+          keypair: aws-imss-1
+          instance_type: t3.micro
+          image: ami-0cc4f2b06b56d27e9
+          region: me-south-1
+          wait: yes
+          count: 1
+          vpc_subnet_id: Default
+          assign_public_ip: yes
+          group: default
